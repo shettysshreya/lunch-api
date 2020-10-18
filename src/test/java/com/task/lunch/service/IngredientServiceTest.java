@@ -15,6 +15,8 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +26,7 @@ import static org.mockito.ArgumentMatchers.*;
 @ExtendWith(MockitoExtension.class)
 public class IngredientServiceTest {
     @Mock
-    private static IngredientRepository repository;
+    private IngredientRepository repository;
 
     @Mock
     private RestTemplate template;
@@ -41,8 +43,9 @@ public class IngredientServiceTest {
     public void testLoadIngredients() throws Exception {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, List<Ingredient>> ingredients = mapper.readValue(new File("src/test/resources/ingredients_api_response.json"),
-                new TypeReference<Map<String, List<Ingredient>>>() {});
+        Map<String, List<Ingredient>> ingredients = mapper.readValue(
+                new File("src/test/resources/ingredients_api_response.json"),
+                new TypeReference<>() {});
         ResponseEntity<Map<String, List<Ingredient>>> responseEntity = new ResponseEntity<Map<String, List<Ingredient>>>(
                 ingredients,
                 header,
@@ -53,6 +56,16 @@ public class IngredientServiceTest {
         Mockito.when(repository.saveAll(anyList())).thenReturn(ingredients.get("ingredients"));
         List<Ingredient> savedIngredients = service.loadIngredients();
         assertEquals(16, savedIngredients.size());
+    }
+
+    @Test
+    public void testGetIngredientsByUseBy(){
+        List<Ingredient> mockIngredients = new ArrayList<>();
+        mockIngredients.add(Ingredient.builder().title("Ingredient1").build());
+        mockIngredients.add(Ingredient.builder().title("Ingredient2").build());
+        Mockito.when(repository.findByUseByGreaterThan(any())).thenReturn(mockIngredients);
+        List<Ingredient> ingredients = service.getIngredientsByUseBy(new Date());
+        assertEquals(2, ingredients.size());
     }
 
 }

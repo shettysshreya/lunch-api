@@ -44,11 +44,12 @@ public class RecipeServiceTest {
     }
 
     @Test
-    public void testLoadIngredients() throws Exception {
+    public void testLoadRecipes() throws Exception {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(MediaType.APPLICATION_JSON);
-        Map<String, List<Recipe>> recipes = mapper.readValue(new File("src/test/resources/recipes_api_response.json"),
-                new TypeReference<Map<String, List<Recipe>>>() {});
+        Map<String, List<Recipe>> recipes = mapper.readValue(
+                new File("src/test/resources/recipes_api_response.json"),
+                new TypeReference<>() {});
         ResponseEntity<Map<String, List<Recipe>>> responseEntity = new ResponseEntity<Map<String, List<Recipe>>>(
                 recipes,
                 header,
@@ -60,5 +61,4 @@ public class RecipeServiceTest {
         List<Recipe> savedRecipes = service.loadRecipes();
         assertEquals(5, savedRecipes.size());
     }
-
 }

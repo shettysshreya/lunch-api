@@ -15,6 +15,7 @@ import org.springframework.util.CollectionUtils;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -37,7 +38,7 @@ public class IngredientService {
 
     /**
      * Retrieve ingredients from the REST API and load into the database
-     * @return
+     * @return List of ingredients loaded into the database
      */
     public List<Ingredient> loadIngredients() throws LunchApiException {
         LOGGER.info("Retrieving ingredients from:" + ingredientsApiUrl);
@@ -56,5 +57,22 @@ public class IngredientService {
         List<Ingredient> ingredients = ingredientResponse.getBody().get("ingredients");
         LOGGER.info("Ingredients size:" + ingredients.size());
         return repository.saveAll(ingredients);
+    }
+
+    /**
+     * Retrieve all ingredients from the database
+     * @return List of all ingredients in the database
+     */
+    public List<Ingredient> getAllIngredients(){
+        return repository.findAll();
+    }
+
+    /**
+     * Retrieve ingredients with use by date greater than the current date
+     * @return List of ingredients with use by date greater than the current date
+     */
+    public List<Ingredient> getIngredientsByUseBy(Date currentDate) {
+        LOGGER.info("Retrieving ingredients with use by date greater than:" + currentDate.toString());
+        return repository.findByUseByGreaterThan(currentDate);
     }
 }

@@ -1,6 +1,5 @@
 package com.task.lunch.util;
 
-import com.task.lunch.LunchApplication;
 import com.task.lunch.service.IngredientService;
 import com.task.lunch.service.RecipeService;
 import org.slf4j.Logger;
@@ -18,11 +17,14 @@ public class DataLoader implements CommandLineRunner {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DataLoader.class);
 
-    @Autowired
     private IngredientService ingredientService;
+    private RecipeService recipeService;
 
     @Autowired
-    private RecipeService recipeService;
+    public DataLoader(IngredientService ingredientService, RecipeService recipeService){
+        this.ingredientService = ingredientService;
+        this.recipeService = recipeService;
+    }
 
     @Override
     public void run(String... args) throws Exception {

@@ -1,9 +1,7 @@
 package com.task.lunch.service;
 
 import com.task.lunch.exception.LunchApiException;
-import com.task.lunch.model.Ingredient;
 import com.task.lunch.model.Recipe;
-import com.task.lunch.repository.IngredientRepository;
 import com.task.lunch.repository.RecipeRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,7 +36,7 @@ public class RecipeService {
 
     /**
      * Retrieve recipes from the REST API and load into the database
-     * @return
+     * @return List of recipes loaded into the database
      */
     public List<Recipe> loadRecipes() throws LunchApiException {
         LOGGER.info("Retrieving recipes from:" + recipesApiUrl);
@@ -47,7 +45,7 @@ public class RecipeService {
         HttpEntity<String> entity = new HttpEntity<>(headers);
         ResponseEntity<Map<String, List<Recipe>>> recipeResponse =
                 restTemplate.exchange(recipesApiUrl, HttpMethod.GET, entity,
-                        new ParameterizedTypeReference<Map<String, List<Recipe>>>() {
+                        new ParameterizedTypeReference<>() {
                         });
         if (recipeResponse.getStatusCode() != HttpStatus.OK || !recipeResponse.hasBody()
                 || CollectionUtils.isEmpty(recipeResponse.getBody().get("recipes"))) {
@@ -57,5 +55,13 @@ public class RecipeService {
         List<Recipe> recipes = recipeResponse.getBody().get("recipes");
         LOGGER.info("Recipes size:" + recipes.size());
         return repository.saveAll(recipes);
+    }
+
+    /**
+     * Retrieves all recipes from the database
+     * @return List of recipes from the database
+     */
+    public List<Recipe> getAllRecipes(){
+       return repository.findAll();
     }
 }
