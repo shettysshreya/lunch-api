@@ -2,6 +2,7 @@ package com.task.lunch.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.task.lunch.exception.LunchApiException;
 import com.task.lunch.model.Ingredient;
 import com.task.lunch.model.Recipe;
 import com.task.lunch.service.LunchService;
@@ -24,7 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
 public class LunchControllerTest {
@@ -83,6 +84,17 @@ public class LunchControllerTest {
                 new TypeReference<>() {
                 });
         assertEquals(recipes.size(), 2);
+    }
+
+    @Test
+    public void testGetRecipesByBestBeforeOnly() {
+        RequestBuilder requestBuilder = MockMvcRequestBuilders.get("/lunch")
+                .param("best-before", "true")
+                .accept(MediaType.APPLICATION_JSON);
+        Exception exception = assertThrows(Exception.class, () -> {
+            mockMvc.perform(requestBuilder).andReturn();
+        });
+        assertTrue(exception.getCause().getMessage().startsWith("Invalid"));
     }
 
     private List<Recipe> buildMockRecipes() {
