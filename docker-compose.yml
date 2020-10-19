@@ -1,0 +1,7 @@
+version: "3"
+services:
+  lunch-api:
+    image: lunch-api:latest
+    container_name: lunch-api
+    ports:
+      - 8080:8080
