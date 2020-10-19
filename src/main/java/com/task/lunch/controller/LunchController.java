@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Rest Controller handling get request to "/lunch" endpoint
+ */
 @RestController
 public class LunchController {
     private static final Logger LOGGER = LoggerFactory.getLogger(LunchController.class);

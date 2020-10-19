@@ -2,8 +2,10 @@ package com.task.lunch.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.task.lunch.exception.LunchApiException;
 import com.task.lunch.model.Ingredient;
 import com.task.lunch.repository.IngredientRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -56,6 +59,23 @@ public class IngredientServiceTest {
         Mockito.when(repository.saveAll(anyList())).thenReturn(ingredients.get("ingredients"));
         List<Ingredient> savedIngredients = service.loadIngredients();
         assertEquals(16, savedIngredients.size());
+    }
+
+    @Test
+    public void testLoadIngredientsWithAPIError() {
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(MediaType.APPLICATION_JSON);
+        ResponseEntity<Map<String, List<Ingredient>>> responseEntity = new ResponseEntity<Map<String, List<Ingredient>>>(
+                null,
+                header,
+                HttpStatus.INTERNAL_SERVER_ERROR
+        );
+        Mockito.when(template.exchange(anyString(), any(), any(), any(ParameterizedTypeReference.class)))
+                .thenReturn(responseEntity);
+        LunchApiException exception = Assertions.assertThrows(LunchApiException.class,
+                () -> service.loadIngredients());
+
+        assertTrue(exception.getMessage().startsWith("Error loading ingredients"));
     }
 
     @Test
