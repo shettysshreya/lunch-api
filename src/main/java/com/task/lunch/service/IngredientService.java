@@ -71,8 +71,8 @@ public class IngredientService {
      * Retrieve ingredients with use by date greater than the current date
      * @return List of ingredients with use by date greater than the current date
      */
-    public List<Ingredient> getIngredientsByUseBy(Date currentDate) {
-        LOGGER.info("Retrieving ingredients with use by date greater than:" + currentDate.toString());
-        return repository.findByUseByGreaterThan(currentDate);
+    public List<Ingredient> getIngredientsByUseBy(Date minimumUseByDate) {
+        LOGGER.info("Retrieving ingredients with use by date greater than:" + minimumUseByDate.toString());
+        return repository.findByUseByGreaterThan(minimumUseByDate);
     }
 }

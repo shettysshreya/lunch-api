@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +38,9 @@ public class LunchService {
      */
     public List<Recipe> getPossibleRecipes(boolean filterByUseBy, boolean sortByBestBefore) {
         List<Recipe> allRecipes = recipeService.getAllRecipes();
-        List<Ingredient> availableIngredients = filterByUseBy ? ingredientService.getIngredientsByUseBy(new Date())
+        //minimumUseByDate is set to yesterday so ingredients with current date as the use by date are considered to be usable
+        Date minimumUseByDate = Date.from(LocalDate.now().minusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        List<Ingredient> availableIngredients = filterByUseBy ? ingredientService.getIngredientsByUseBy(minimumUseByDate)
                                                 : ingredientService.getAllIngredients();
         List<Recipe> result = new ArrayList<>();
         for (Recipe recipe : allRecipes) {
