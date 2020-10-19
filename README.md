@@ -49,6 +49,7 @@ Swagger docs are available at http://localhost:8080/swagger-ui/
 * Add integration tests
 * Map /error path to display a customized message instead of default whitelabel error page
 * Improve exception handling
+* Use Spring profiles to configure dev/test/prod environments
 
 
 
